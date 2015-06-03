@@ -48,3 +48,5 @@ crashlytics-build.properties
 
 .gradle
 build/
+
+local.properties

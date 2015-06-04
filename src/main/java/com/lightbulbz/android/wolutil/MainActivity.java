@@ -1,13 +1,21 @@
 package com.lightbulbz.android.wolutil;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.lightbulbz.net.MacAddress;
+import com.lightbulbz.net.MacAddressFormatException;
+import com.lightbulbz.net.NetUtils;
+import com.lightbulbz.net.WOLPacketSender;
+
+import java.net.InetAddress;
 
 
 public class MainActivity extends Activity implements View.OnClickListener {
@@ -49,13 +57,31 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.buttonSend)
         {
-            (new AlertDialog.Builder(this))
-                    .setTitle("Info")
-                    .setIcon(android.R.drawable.ic_dialog_info)
-                    .setMessage("Send button clicked.")
-                    .setPositiveButton("OK", null)
-                    .show();
+            EditText et = (EditText) findViewById(R.id.textView);
+            try {
+                MacAddress addr = MacAddress.parseMacAddress(et.getText().toString());
+                new SendWOLTask().execute(addr);
+            }
+            catch (MacAddressFormatException ex)
+            {
+                Log.w("wolutil-android", "Invalid mac address: " + et.getText().toString());
+            }
         }
     }
 
+    private class SendWOLTask extends AsyncTask<MacAddress, Void, Void> {
+
+        @Override
+        protected Void doInBackground(MacAddress... params) {
+            for (InetAddress addr : NetUtils.getBroadcastAddresses()) {
+                try {
+                    new WOLPacketSender(addr, params[0]).sendPacket();
+                }
+                catch (java.io.IOException ex) {
+                    // ignore it
+                }
+            }
+            return null;
+        }
+    }
 }

@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
  * Created by kevin on 6/3/15.
  */
 class MyTextWatcher implements TextWatcher {
-    final int COLOR_VALID;
-    final int COLOR_INVALID;
+    private final int COLOR_VALID;
+    private final int COLOR_INVALID;
     private final EditText editText;
     private final String validPattern;
 

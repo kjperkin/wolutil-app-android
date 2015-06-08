@@ -10,10 +10,9 @@ import java.util.Set;
  * Created by kevin on 6/7/15.
  */
 public class MacAddressFavoritesModel {
-    private Map<String, MacAddress> favorites;
+    private final Map<String, MacAddress> favorites = new HashMap<>();
 
     public MacAddressFavoritesModel() {
-        favorites = new HashMap<>();
     }
 
     public Favorite getFavorite(String key) {

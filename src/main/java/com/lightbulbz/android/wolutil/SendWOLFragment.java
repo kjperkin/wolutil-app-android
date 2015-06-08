@@ -19,7 +19,7 @@ import com.lightbulbz.net.MacAddressFormatException;
 public class SendWOLFragment extends Fragment implements View.OnClickListener {
 
 
-    public static final String KEY_MAC_ADDRESS = "SendWOLFragment.macAddress";
+    private static final String KEY_MAC_ADDRESS = "SendWOLFragment.macAddress";
     private EditText mMacAddress;
     private MyTextWatcher mTextWatcher;
     private OnSendRequestedListener mListener;

@@ -18,7 +18,7 @@ import java.io.OutputStreamWriter;
 /**
  * Created by kevin on 6/7/15.
  */
-public class MacAddressFavoritesStorage {
+class MacAddressFavoritesStorage {
     public static MacAddressFavoritesModel readJsonStream(InputStream in) throws IOException {
         final JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         final MacAddressFavoritesModel model = new MacAddressFavoritesModel();

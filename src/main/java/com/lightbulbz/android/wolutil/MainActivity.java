@@ -6,7 +6,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,8 +18,8 @@ import java.net.InetAddress;
 
 public class MainActivity extends Activity implements SendWOLFragment.OnSendRequestedListener, MacAddressFavoritesFragment.OnMacAddressSelectedListener {
 
-    public static final String TAG_SEND = "send";
-    public static final String TAG_FAVORITES = "favorites";
+    private static final String TAG_SEND = "send";
+    private static final String TAG_FAVORITES = "favorites";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +120,7 @@ public class MainActivity extends Activity implements SendWOLFragment.OnSendRequ
         }
     }
 
-    private FragmentManager.OnBackStackChangedListener backStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+    private final FragmentManager.OnBackStackChangedListener backStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
         @Override
         public void onBackStackChanged() {
             invalidateOptionsMenu();

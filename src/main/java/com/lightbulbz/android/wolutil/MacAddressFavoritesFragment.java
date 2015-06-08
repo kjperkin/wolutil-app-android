@@ -18,11 +18,10 @@ import com.lightbulbz.net.MacAddress;
  */
 public class MacAddressFavoritesFragment extends ListFragment {
 
-    public static final String KEY_FILE_PATH = "MacAddressFragmentFile.mFavoritesFilePath";
+    private static final String KEY_FILE_PATH = "MacAddressFragmentFile.mFavoritesFilePath";
     private OnMacAddressSelectedListener mListener;
     private MacAddressFavoritesModel mFavorites;
     private String mFavoritesFilePath;
-    private static final String[] FAVORITES_ARRAY = { "6c:f0:49:e7:14:19" };
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

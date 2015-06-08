@@ -4,7 +4,6 @@
     <string name="mac_address_hint">00:00:00:00:00:00</string>
     <string name="sent_button_text">Send</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_label_favorites">Favorites</string>
 
 </resources>

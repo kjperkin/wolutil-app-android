@@ -6,6 +6,8 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -19,9 +21,11 @@ import com.lightbulbz.net.MacAddressFormatException;
 public class SendWOLFragment extends Fragment implements View.OnClickListener {
 
 
+    public static final String KEY_MAC_ADDRESS = "SendWOLFragment.macAddress";
     private EditText mMacAddress;
     private MyTextWatcher mTextWatcher;
     private OnSendRequestedListener mListener;
+    private String mMacAddressString;
 
     public SendWOLFragment() {
         // Required empty public constructor
@@ -48,7 +52,27 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
         mMacAddress = (EditText) myView.findViewById(R.id.textView);
         mTextWatcher = new MyTextWatcher(getActivity(), mMacAddress, "(?:[0-9a-fA-F]{2}+:){5}+[0-9a-fA-F]{2}+");
         mMacAddress.addTextChangedListener(mTextWatcher);
+        if (savedInstanceState != null) {
+            mMacAddressString = savedInstanceState.getString(KEY_MAC_ADDRESS);
+        }
+
         return myView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mMacAddressString != null) {
+            outState.putString(KEY_MAC_ADDRESS, mMacAddressString);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (mMacAddressString != null) {
+            mMacAddress.setText(mMacAddressString);
+        }
     }
 
     @Override
@@ -87,6 +111,8 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
     public void setMacAddress(String address) {
         if (mMacAddress != null) {
             mMacAddress.setText(address);
+        } else {
+            mMacAddressString = address;
         }
     }
 

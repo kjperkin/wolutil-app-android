@@ -6,8 +6,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -25,7 +23,7 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
     private EditText mMacAddress;
     private MyTextWatcher mTextWatcher;
     private OnSendRequestedListener mListener;
-    private String mMacAddressString;
+    private String mTempAddressString;
 
     public SendWOLFragment() {
         // Required empty public constructor
@@ -53,7 +51,7 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
         mTextWatcher = new MyTextWatcher(getActivity(), mMacAddress, "(?:[0-9a-fA-F]{2}+:){5}+[0-9a-fA-F]{2}+");
         mMacAddress.addTextChangedListener(mTextWatcher);
         if (savedInstanceState != null) {
-            mMacAddressString = savedInstanceState.getString(KEY_MAC_ADDRESS);
+            mTempAddressString = savedInstanceState.getString(KEY_MAC_ADDRESS);
         }
 
         return myView;
@@ -61,8 +59,8 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (mMacAddressString != null) {
-            outState.putString(KEY_MAC_ADDRESS, mMacAddressString);
+        if (mTempAddressString != null) {
+            outState.putString(KEY_MAC_ADDRESS, mTempAddressString);
         }
         super.onSaveInstanceState(outState);
     }
@@ -70,8 +68,11 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if (mMacAddressString != null) {
-            mMacAddress.setText(mMacAddressString);
+        if (mTempAddressString != null && mMacAddress != null) {
+            // We had a mac address set while our view was destroyed.
+            // We should put it into effect now.
+            mMacAddress.setText(mTempAddressString);
+            mTempAddressString = null;
         }
     }
 
@@ -112,7 +113,9 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
         if (mMacAddress != null) {
             mMacAddress.setText(address);
         } else {
-            mMacAddressString = address;
+            // If mMacAddress is null, we don't have a view yet.
+            // Save the address and put it in the view when we create it
+            mTempAddressString = address;
         }
     }
 

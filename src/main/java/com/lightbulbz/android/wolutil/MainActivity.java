@@ -2,8 +2,11 @@ package com.lightbulbz.android.wolutil;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,15 +19,40 @@ import java.net.InetAddress;
 
 public class MainActivity extends Activity implements SendWOLFragment.OnSendRequestedListener, MacAddressFavoritesFragment.OnMacAddressSelectedListener {
 
+    public static final String TAG_SEND = "send";
+    public static final String TAG_FAVORITES = "favorites";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_container, new SendWOLFragment(), "send")
-                .add(MacAddressFavoritesFragment.newInstance(""), "favorites")
-                .commit();
+
+        if (savedInstanceState == null) {
+            Fragment sendFragment = new SendWOLFragment();
+            Fragment favoritesFragment = MacAddressFavoritesFragment.newInstance("");
+
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.add(R.id.main_container, sendFragment, TAG_SEND);
+            if (findViewById(R.id.favorites_container) != null) {
+                transaction.add(R.id.favorites_container, favoritesFragment, TAG_FAVORITES);
+            } else {
+                transaction.add(R.id.main_container, favoritesFragment, TAG_FAVORITES).detach(favoritesFragment);
+            }
+            transaction.commit();
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        getFragmentManager().removeOnBackStackChangedListener(backStackChangedListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getFragmentManager().addOnBackStackChangedListener(backStackChangedListener);
     }
 
     @Override
@@ -34,56 +62,48 @@ public class MainActivity extends Activity implements SendWOLFragment.OnSendRequ
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (findViewById(R.id.favorites_container) == null) {
+            Fragment favs = getFragmentManager().findFragmentByTag(TAG_FAVORITES);
+            if (favs == null || favs.isDetached()) {
+                getMenuInflater().inflate(R.menu.menu_with_favorites, menu);
+            }
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
 
-    private void showFavorites() {
-        Fragment f = getFragmentManager().findFragmentByTag("favorites");
-        if (f == null) {
-            f = MacAddressFavoritesFragment.newInstance("");
+        if (item.getItemId() == R.id.menu_item_favorites) {
+            Fragment favs = getFragmentManager().findFragmentByTag(TAG_FAVORITES);
+            Fragment send = getFragmentManager().findFragmentByTag(TAG_SEND);
+            if(favs.isDetached())
+            {
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                if (!send.isDetached()) {
+                    transaction.detach(send);
+                }
+                transaction
+                        .attach(favs)
+                        .addToBackStack(null)
+                        .commit();
+            }
+            return true;
         }
 
-        getFragmentManager()
-                .beginTransaction()
-                .addToBackStack(null)
-                .remove(getFragmentManager().findFragmentByTag("send"))
-                .add(R.id.main_container, f, "favorites").commit();
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onFavoriteSelected(MacAddressFavoritesModel.Favorite favorite) {
-        getFragmentManager().popBackStack();
-        hideFavorites();
-        showSend();
-        ((SendWOLFragment) getFragmentManager().findFragmentByTag("send")).setMacAddress(favorite.addr.toString());
-    }
+        SendWOLFragment send = (SendWOLFragment) getFragmentManager().findFragmentByTag(TAG_SEND);
+        send.setMacAddress(favorite.addr.toString());
 
-    private void showSend() {
-        Fragment f = getFragmentManager().findFragmentByTag("send");
-        if (f == null) {
-            f = new SendWOLFragment();
-        }
-        getFragmentManager()
-                .beginTransaction()
-                .add(R.id.main_container, f, "send")
-                .commit();
-        invalidateOptionsMenu();
-    }
-
-    private void hideFavorites() {
-        Fragment f = getFragmentManager().findFragmentByTag("favorites");
-        if (f != null && f.isVisible()) {
-            getFragmentManager().beginTransaction().remove(f).commit();
+        if (findViewById(R.id.favorites_container) == null) {
+            getFragmentManager().popBackStackImmediate();
+            invalidateOptionsMenu();
         }
     }
-
 
     private class SendWOLTask extends AsyncTask<MacAddress, Void, Void> {
 
@@ -100,4 +120,12 @@ public class MainActivity extends Activity implements SendWOLFragment.OnSendRequ
             return null;
         }
     }
+
+    private FragmentManager.OnBackStackChangedListener backStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            invalidateOptionsMenu();
+        }
+    };
+
 }

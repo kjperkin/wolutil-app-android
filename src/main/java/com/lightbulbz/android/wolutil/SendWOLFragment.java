@@ -45,6 +45,11 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View myView = inflater.inflate(R.layout.fragment_send_wol, container, false);
+
+        if (!mListener.canSaveMacAddress()) {
+            myView.findViewById(R.id.buttonSave).setVisibility(View.GONE);
+        }
+
         myView.findViewById(R.id.buttonSend).setOnClickListener(this);
 
         mMacAddress = (EditText) myView.findViewById(R.id.textView);

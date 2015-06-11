@@ -51,6 +51,7 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
         }
 
         myView.findViewById(R.id.buttonSend).setOnClickListener(this);
+        myView.findViewById(R.id.buttonSave).setOnClickListener(this);
 
         mMacAddress = (EditText) myView.findViewById(R.id.textView);
         mTextWatcher = new MyTextWatcher(getActivity(), mMacAddress, "(?:[0-9a-fA-F]{2}+:){5}+[0-9a-fA-F]{2}+");
@@ -91,21 +92,46 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.buttonSend)
-        {
-            if (mMacAddress != null) {
-                try {
-                    MacAddress addr = MacAddress.parseMacAddress(mMacAddress.getText().toString());
-                    if (mListener != null) {
-                        mListener.onSendRequested(addr);
-                    }
-                } catch (MacAddressFormatException ex) {
-                    Log.w("SendWOLFragment", "Invalid mac address: " + mMacAddress.getText().toString());
-                }
-            } else {
-                Log.e("SendWOLFragment", "onClick called but view seems to have been destroyed!");
-            }
+        switch (v.getId()) {
+            case R.id.buttonSend:
+                handleSendButtonClick();
+                break;
+            case R.id.buttonSave:
+                handleSaveButtonClick();
+                break;
         }
+    }
+
+    private void handleSaveButtonClick() {
+        if (mMacAddress != null && mListener != null) {
+            MacAddress addr = null;
+            try {
+                addr = MacAddress.parseMacAddress(mMacAddress.getText().toString());
+            } catch (MacAddressFormatException ex) {
+                logInvalidMacAddress();
+            }
+
+            if (addr != null) mListener.onSaveRequested(addr);
+        }
+    }
+
+    private void handleSendButtonClick() {
+        if (mMacAddress != null) {
+            try {
+                MacAddress addr = MacAddress.parseMacAddress(mMacAddress.getText().toString());
+                if (mListener != null) {
+                    mListener.onSendRequested(addr);
+                }
+            } catch (MacAddressFormatException ex) {
+                logInvalidMacAddress();
+            }
+        } else {
+            Log.e("SendWOLFragment", "onClick called but view seems to have been destroyed!");
+        }
+    }
+
+    private void logInvalidMacAddress() {
+        Log.w("SendWOLFragment", "Invalid mac address: " + mMacAddress.getText().toString());
     }
 
     @Override

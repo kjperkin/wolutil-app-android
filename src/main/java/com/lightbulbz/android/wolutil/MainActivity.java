@@ -13,13 +13,17 @@ import com.lightbulbz.net.MacAddress;
 import com.lightbulbz.net.NetUtils;
 import com.lightbulbz.net.WOLPacketSender;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 
 
-public class MainActivity extends Activity implements SendWOLFragment.Listener, MacAddressFavoritesFragment.OnMacAddressSelectedListener {
+public class MainActivity extends Activity implements SendWOLFragment.Listener, MacAddressFavoritesFragment.Listener {
 
     private static final String TAG_SEND = "send";
     private static final String TAG_FAVORITES = "favorites";
+
+    private MacAddressFavoritesModel mFavorites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,7 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
 
         if (savedInstanceState == null) {
             Fragment sendFragment = new SendWOLFragment();
-            Fragment favoritesFragment = MacAddressFavoritesFragment.newInstance("");
+            Fragment favoritesFragment = new MacAddressFavoritesFragment();
 
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.add(R.id.main_container, sendFragment, TAG_SEND);
@@ -40,12 +44,23 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
             transaction.commit();
         }
 
+        try {
+            mFavorites = MacAddressFavoritesStorage.readJsonStream(openFileInput("favorites.json"));
+        } catch (IOException e) {
+            mFavorites = new MacAddressFavoritesModel();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         getFragmentManager().removeOnBackStackChangedListener(backStackChangedListener);
+        try {
+            OutputStream out = openFileOutput("favorites.json", MODE_PRIVATE);
+            MacAddressFavoritesStorage.writeJsonStream(mFavorites, out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -61,7 +76,8 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
 
     @Override
     public void onSaveRequested(MacAddress target) {
-        // save this mac address as a favorite
+        mFavorites.addFavorite(target.toString(), target);
+        ((MacAddressFavoritesFragment)getFragmentManager().findFragmentByTag(TAG_FAVORITES)).notifyDataSetChanged();
     }
 
     @Override
@@ -104,14 +120,19 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
     }
 
     @Override
-    public void onFavoriteSelected(MacAddressFavoritesModel.Favorite favorite) {
+    public void onFavoriteSelected(int index) {
         SendWOLFragment send = (SendWOLFragment) getFragmentManager().findFragmentByTag(TAG_SEND);
-        send.setMacAddress(favorite.addr.toString());
+        send.setMacAddress(mFavorites.getFavorite(index).addr.toString());
 
         if (findViewById(R.id.favorites_container) == null) {
             getFragmentManager().popBackStackImmediate();
             invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    public MacAddressFavoritesModel getFavoritesModel() {
+        return mFavorites;
     }
 
     private class SendWOLTask extends AsyncTask<MacAddress, Void, Void> {

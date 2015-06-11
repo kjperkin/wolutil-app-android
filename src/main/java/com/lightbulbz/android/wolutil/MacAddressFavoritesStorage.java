@@ -19,7 +19,7 @@ import java.io.OutputStreamWriter;
  * Created by kevin on 6/7/15.
  */
 class MacAddressFavoritesStorage {
-    public static MacAddressFavoritesModel readJsonStream(InputStream in) throws IOException {
+    public static MacAddressFavoritesModel readJsonStream(InputStream in) throws IOException, IllegalStateException {
         final JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
         final MacAddressFavoritesModel model = new MacAddressFavoritesModel();
         try {
@@ -52,7 +52,7 @@ class MacAddressFavoritesStorage {
             final String name = reader.nextName();
             switch (name) {
                 case "name":
-                    f.name = name;
+                    f.name = reader.nextString();
                     break;
                 case "addr":
                     try {
@@ -88,8 +88,9 @@ class MacAddressFavoritesStorage {
 
     private static void writeFavorites(MacAddressFavoritesModel model, JsonWriter writer) throws IOException {
         writer.beginArray();
-        for (String name : model.getFavoriteNames()) {
-            writeFavorite(model.getFavorite(name), writer);
+        int favoriteCount = model.getFavoriteCount();
+        for (int idx = 0; idx < favoriteCount; idx++) {
+            writeFavorite(model.getFavorite(idx), writer);
         }
         writer.endArray();
     }

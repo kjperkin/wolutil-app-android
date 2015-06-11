@@ -2,41 +2,51 @@ package com.lightbulbz.android.wolutil;
 
 import com.lightbulbz.net.MacAddress;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by kevin on 6/7/15.
  */
 public class MacAddressFavoritesModel {
-    private final Map<String, MacAddress> favorites = new HashMap<>();
+    private final List<Favorite> favorites = new ArrayList<>();
+    private final Map<String, Integer> favoritesByName = new HashMap<>();
 
     public MacAddressFavoritesModel() {
     }
 
+    public int getFavoriteCount() {
+        return favorites.size();
+    }
+
+    public Favorite getFavorite(int index) {
+        return favorites.get(index);
+    }
+
     public Favorite getFavorite(String key) {
-        return new Favorite(key, favorites.get(key));
+        return favorites.get(favoritesByName.get(key));
     }
 
     public void removeFavorite(Favorite f) {
-        favorites.remove(f.name);
+        removeFavorite(f.name);
     }
 
     public void removeFavorite(String key) {
-        favorites.remove(key);
+        removeFavorite(favoritesByName.get(key));
+    }
+
+    public void removeFavorite(int index) {
+        favorites.remove(index);
+        favoritesByName.clear();
+        for (int idx = 0; idx < favorites.size(); idx++) {
+            favoritesByName.put(favorites.get(idx).name, idx);
+        }
     }
 
     public boolean hasFavorites() {
         return favorites.isEmpty();
-    }
-
-    public Set<String> getFavoriteNames() {
-        return favorites.keySet();
-    }
-
-    public int size() {
-        return favorites.size();
     }
 
     public void addFavorite(Favorite f) {
@@ -44,7 +54,13 @@ public class MacAddressFavoritesModel {
     }
 
     public void addFavorite(String key, MacAddress value) {
-        favorites.put(key, value);
+        Favorite favorite = new Favorite(key, value);
+        if (favoritesByName.containsKey(key)) {
+            favorites.set(favoritesByName.get(key), favorite);
+        } else {
+            favorites.add(favorite);
+            favoritesByName.put(key, favorites.size()-1);
+        }
     }
 
     public static class Favorite {

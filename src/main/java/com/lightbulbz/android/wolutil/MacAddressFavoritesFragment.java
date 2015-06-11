@@ -66,7 +66,6 @@ public class MacAddressFavoritesFragment extends ListFragment implements AbsList
 
         getListView().setMultiChoiceModeListener(this);
         getListView().setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
-        //mFavorites.addFavorite("Kevin's PC", MacAddress.parseMacAddress("6c:f0:49:e7:14:19"));
     }
 
     @Override

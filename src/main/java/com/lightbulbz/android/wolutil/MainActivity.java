@@ -16,7 +16,7 @@ import com.lightbulbz.net.WOLPacketSender;
 import java.net.InetAddress;
 
 
-public class MainActivity extends Activity implements SendWOLFragment.OnSendRequestedListener, MacAddressFavoritesFragment.OnMacAddressSelectedListener {
+public class MainActivity extends Activity implements SendWOLFragment.Listener, MacAddressFavoritesFragment.OnMacAddressSelectedListener {
 
     private static final String TAG_SEND = "send";
     private static final String TAG_FAVORITES = "favorites";
@@ -57,6 +57,16 @@ public class MainActivity extends Activity implements SendWOLFragment.OnSendRequ
     @Override
     public void onSendRequested(MacAddress target) {
         new SendWOLTask().execute(target);
+    }
+
+    @Override
+    public void onSaveRequested(MacAddress target) {
+        // save this mac address as a favorite
+    }
+
+    @Override
+    public boolean canSaveMacAddress() {
+        return true;
     }
 
     @Override

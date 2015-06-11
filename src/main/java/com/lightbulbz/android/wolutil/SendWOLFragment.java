@@ -22,7 +22,7 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
     private static final String KEY_MAC_ADDRESS = "SendWOLFragment.macAddress";
     private EditText mMacAddress;
     private MyTextWatcher mTextWatcher;
-    private OnSendRequestedListener mListener;
+    private Listener mListener;
     private String mTempAddressString;
 
     public SendWOLFragment() {
@@ -33,10 +33,10 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnSendRequestedListener) activity;
+            mListener = (Listener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() +
-                    " must implement interface OnSendRequestedListener");
+                    " must implement interface Listener");
         }
     }
 
@@ -119,7 +119,10 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public interface OnSendRequestedListener {
+    public interface Listener {
         void onSendRequested(MacAddress target);
+        void onSaveRequested(MacAddress target);
+        boolean canSaveMacAddress();
     }
+
 }

@@ -3,7 +3,10 @@ package com.lightbulbz.android.wolutil;
 import com.lightbulbz.net.MacAddress;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,9 +42,24 @@ public class MacAddressFavoritesModel {
 
     public void removeFavorite(int index) {
         favorites.remove(index);
+        rebuildMap();
+    }
+
+    private void rebuildMap() {
         favoritesByName.clear();
         for (int idx = 0; idx < favorites.size(); idx++) {
             favoritesByName.put(favorites.get(idx).name, idx);
+        }
+    }
+
+    public void removeAll(Collection<? extends Integer> positions) {
+        if (positions.size() > 0) {
+            ArrayList<Integer> posList = new ArrayList<>(positions);
+            Collections.sort(posList, Collections.reverseOrder());
+            for (int i : posList) {
+                favorites.remove(i);
+            }
+            rebuildMap();
         }
     }
 

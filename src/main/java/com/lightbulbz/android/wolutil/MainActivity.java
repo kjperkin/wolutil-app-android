@@ -16,6 +16,7 @@ import com.lightbulbz.net.WOLPacketSender;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.util.Collection;
 
 
 public class MainActivity extends Activity implements SendWOLFragment.Listener, MacAddressFavoritesFragment.Listener {
@@ -77,6 +78,10 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
     @Override
     public void onSaveRequested(MacAddress target) {
         mFavorites.addFavorite(target.toString(), target);
+        notifyModelChanged();
+    }
+
+    private void notifyModelChanged() {
         ((MacAddressFavoritesFragment)getFragmentManager().findFragmentByTag(TAG_FAVORITES)).notifyDataSetChanged();
     }
 
@@ -133,6 +138,13 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
     @Override
     public MacAddressFavoritesModel getFavoritesModel() {
         return mFavorites;
+    }
+
+    @Override
+    public void onRequestDeleteFavorites(Collection<Integer> positions) {
+        if (mFavorites != null) {
+            mFavorites.removeAll(positions);
+        }
     }
 
     private class SendWOLTask extends AsyncTask<MacAddress, Void, Void> {

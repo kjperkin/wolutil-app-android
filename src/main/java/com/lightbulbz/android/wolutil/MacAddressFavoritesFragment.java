@@ -2,12 +2,9 @@ package com.lightbulbz.android.wolutil;
 
 import android.app.Activity;
 import android.app.ListFragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,11 +16,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A fragment representing a list of Items.

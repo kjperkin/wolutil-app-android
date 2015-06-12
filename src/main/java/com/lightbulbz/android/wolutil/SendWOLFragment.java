@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.lightbulbz.net.MacAddress;
 import com.lightbulbz.net.MacAddressFormatException;
@@ -47,13 +48,19 @@ public class SendWOLFragment extends Fragment implements View.OnClickListener {
         View myView = inflater.inflate(R.layout.fragment_send_wol, container, false);
 
         if (!mListener.canSaveMacAddress()) {
+            View sendButton = myView.findViewById(R.id.buttonSend);
+            RelativeLayout.LayoutParams sendButtonLayoutParams = (RelativeLayout.LayoutParams) sendButton.getLayoutParams();
+            sendButtonLayoutParams.addRule(RelativeLayout.ALIGN_RIGHT, 0);
+            sendButtonLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            sendButtonLayoutParams.leftMargin = sendButtonLayoutParams.rightMargin = 10;
+            sendButton.setLayoutParams(sendButtonLayoutParams);
             myView.findViewById(R.id.buttonSave).setVisibility(View.GONE);
         }
 
         myView.findViewById(R.id.buttonSend).setOnClickListener(this);
         myView.findViewById(R.id.buttonSave).setOnClickListener(this);
 
-        mMacAddress = (EditText) myView.findViewById(R.id.textView);
+        mMacAddress = (EditText) myView.findViewById(R.id.macAddress);
         mTextWatcher = new MyTextWatcher(getActivity(), mMacAddress, "(?:[0-9a-fA-F]{2}+:){5}+[0-9a-fA-F]{2}+");
         mMacAddress.addTextChangedListener(mTextWatcher);
         if (savedInstanceState != null) {

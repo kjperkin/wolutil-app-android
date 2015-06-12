@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="5dp">
 
     <EditText
         android:layout_width="match_parent"
@@ -11,13 +12,16 @@
         android:id="@+id/favoriteName"
         tools:text="Favorite Name"
         android:inputType="text"
-        android:hint="@string/favoriteNameHint"
-        android:singleLine="true" />
+        android:hint="@string/hint_favorite_name"
+        android:singleLine="true"
+        android:autoLink="none"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="00:00:00:00:00:00"
-        android:id="@+id/address" />
+        android:id="@+id/address"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

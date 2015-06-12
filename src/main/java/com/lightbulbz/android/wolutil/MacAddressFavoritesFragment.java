@@ -53,7 +53,7 @@ public class MacAddressFavoritesFragment extends ListFragment implements AbsList
             mListener = (Listener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement Listener");
+                    + " must implement MacAddressFavoritesFragment.Listener");
         }
     }
 

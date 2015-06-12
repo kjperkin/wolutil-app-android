@@ -22,6 +22,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/text2"
-        tools:text="Address" />
+        tools:text="00:00:00:00:00:00" />
 
 </LinearLayout>

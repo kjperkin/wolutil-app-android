@@ -19,7 +19,13 @@ import java.net.InetAddress;
 import java.util.Collection;
 
 
-public class MainActivity extends Activity implements SendWOLFragment.Listener, MacAddressFavoritesFragment.Listener {
+public class MainActivity
+        extends
+            Activity
+        implements
+            SendWOLFragment.Listener,
+            MacAddressFavoritesFragment.Listener,
+            CreateFavoriteFragment.OnDialogResultListener {
 
     private static final String TAG_SEND = "send";
     private static final String TAG_FAVORITES = "favorites";
@@ -77,8 +83,7 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
 
     @Override
     public void onSaveRequested(MacAddress target) {
-        mFavorites.addFavorite(target.toString(), target);
-        notifyModelChanged();
+        CreateFavoriteFragment.newInstance(target).show(getFragmentManager(), "create");
     }
 
     private void notifyModelChanged() {
@@ -145,6 +150,17 @@ public class MainActivity extends Activity implements SendWOLFragment.Listener, 
         if (mFavorites != null) {
             mFavorites.removeAll(positions);
         }
+    }
+
+    @Override
+    public void onCreateFavorite(String name, MacAddress addr) {
+        mFavorites.addFavorite(name, addr);
+        notifyModelChanged();
+    }
+
+    @Override
+    public void onNegativeResponse() {
+
     }
 
     private class SendWOLTask extends AsyncTask<MacAddress, Void, Void> {

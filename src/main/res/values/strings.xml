@@ -6,5 +6,7 @@
 
     <string name="menu_label_favorites">Favorites</string>
     <string name="save_button_text">Save</string>
+    <string name="title_create_favorite">Add Favorite</string>
+    <string name="favoriteNameHint">Favorite Name</string>
 
 </resources>

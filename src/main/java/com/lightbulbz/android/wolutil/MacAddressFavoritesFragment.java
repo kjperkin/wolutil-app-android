@@ -5,11 +5,9 @@ import android.app.ListFragment;
 import android.os.Bundle;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -89,12 +87,6 @@ public class MacAddressFavoritesFragment extends ListFragment implements AbsList
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = super.onCreateView(inflater, container, savedInstanceState);
-        return v;
     }
 
     @Override

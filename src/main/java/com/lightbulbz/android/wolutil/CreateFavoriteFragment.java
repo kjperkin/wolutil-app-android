@@ -1,5 +1,6 @@
 package com.lightbulbz.android.wolutil;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -85,7 +86,7 @@ public class CreateFavoriteFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View dialogContents = inflater.inflate(R.layout.fragment_create_favorite, null);
+        @SuppressLint("InflateParams") View dialogContents = inflater.inflate(R.layout.fragment_create_favorite, null);
         ((TextView) dialogContents.findViewById(R.id.address)).setText(mAddr.toString());
 
         return builder

@@ -1,6 +1,5 @@
 package com.lightbulbz.android.wolutil;
 
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,7 @@ import android.widget.TextView;
  */
 public class MacAddressFavoritesAdapter extends BaseAdapter implements ListAdapter {
 
-    MacAddressFavoritesModel mModel;
+    final MacAddressFavoritesModel mModel;
 
     MacAddressFavoritesAdapter(MacAddressFavoritesModel model) {
         mModel = model;
